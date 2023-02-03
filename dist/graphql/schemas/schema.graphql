@@ -1,0 +1,45 @@
+type User {
+  email: String
+  name: String
+  phone: String
+}
+
+type Task {
+  title: String
+  completed: Boolean
+  user: User
+}
+
+type Query {
+  tasks(id: String): [Task]
+}
+type Mutation {
+  addTask(id: String, input: InputTask!): Task
+}
+type Mutation {
+  updateTask(id: String, input: InputTask!): Task
+}
+
+type Query {
+  users: [User]
+}
+type Query {
+  user(id: String!): User
+}
+
+type Mutation {
+  addUser(input: InputUser!): User
+}
+type Mutation {
+  updateUser(id: String, input: InputUser!): User
+}
+input InputUser {
+  email: String
+  name: String
+  phone: String
+}
+input InputTask {
+  title: String
+  completed: Boolean
+  user: InputUser
+}
