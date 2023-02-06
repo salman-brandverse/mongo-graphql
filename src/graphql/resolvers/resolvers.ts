@@ -1,38 +1,43 @@
-import { GraphQLResolveInfo } from "graphql";
-// import { Context } from '../../models/';
-import { makeExecutableSchema } from "graphql-tools";
-import { TaskController } from "../../controllers/task.controller";
-import { UsersController } from "../../controllers/user.controller";
+import TaskController, {
+  Task,
+  TasksParamsType,
+} from "../../controllers/task.controller"
+import UsersController, {
+  UserParams,
+  UserupdateType,
+} from "../../controllers/user.controller"
 
-const usersController = new UsersController();
-const tasksController = new TaskController();
 const resolvers = {
   Query: {
-    user: (_: void, args: any, ctx: any, _info: any) => {
-      return usersController.getUser(args, ctx);
+    user: async (root: any, { id }: { id: string }, ctx: any) => {
+      return await UsersController().userById({ id })
     },
-    users: (_: void, args: any, ctx: any, _info: any) => {
-      return usersController.getUsers(args, ctx);
+    users: async (root: any, args: {}, ctx: any) => {
+      return await UsersController().getUsers(args, ctx)
     },
-    tasks: (_, inputObject, ctx: any) => {
-      return tasksController.getTasks(inputObject, ctx);
+    tasks: async (root: any, { id }: { id: string }, ctx: any) => {
+      return await TaskController.taskById({ id }, ctx)
     },
   },
   Mutation: {
-    addUser: (_, inputObject, ctx: any) => {
-      return usersController.addUser(inputObject, ctx);
+    addUser: async (root: any, inputObject: { input: UserParams }, ctx: any) =>
+      await UsersController().addNewUser(inputObject, ctx),
+    updateUser: async (
+      root: any,
+      { id, input }: { id: string; input: UserupdateType },
+      ctx: any
+    ) => await UsersController().updateUser({ id, input }, ctx),
+    addTask: async (root: any, { id, input }: TasksParamsType, ctx: any) => {
+      return await TaskController.addNewTask({ id, input }, ctx)
     },
-    updateUser: (_, inputObject, ctx: any) => {
-      return usersController.updateUser(inputObject, ctx);
-    },
-
-    addTask: (_, inputObject, ctx: any) => {
-      return tasksController.addTask(inputObject, ctx);
-    },
-    updateTask: (_, inputObject, ctx: any) => {
-      return tasksController.updateTask(inputObject, ctx);
+    updateTask: async (
+      root: any,
+      { id, input }: { id: string; input: Task },
+      ctx: any
+    ) => {
+      return await TaskController.updateTask({ id, input }, ctx)
     },
   },
-};
+}
 
-export default resolvers;
+export default resolvers

@@ -1,39 +1,36 @@
-// import { Context } from '../models/context';
+import { UserParams } from "./user.controller"
+import Tasks from "../models/tasks"
 
-const Tasks = require("../models/tasks");
+export type Task = {
+  title: string
+  completed: boolean
+}
 
-export class TaskController {
-  getTasks(args: any, ctx: any) {
-    return Tasks.find({ user: args["id"] })
-      .populate({
-        path: "user",
-        model: "User",
-      })
-      .then((user: any) => {
-        console.log("users", user);
-        return user;
-      });
-  }
+export type TasksParamsType = {
+  input: Task
+  id: string
+}
+export type TasksType = {
+  title: string
+  completed: string
+  id?: string
+  user?: UserParams
+}
 
-  addTask(inputObject: any, ctx: any) {
-    return Tasks.create({
-      title: inputObject.input.title,
-      completed: inputObject.input.completed,
-      user: inputObject.id,
-    }).then((taskInfo: any) => {
-      return taskInfo;
-    });
-  }
-
-  updateTask(inputObject: any, ctx: any) {
-    console.log("inputObject", inputObject);
-    return Tasks.findOneAndUpdate({ user: inputObject.id }, inputObject.input)
-      .then((userInfo: any) => {
-        console.log("work", userInfo);
-        return userInfo;
-      })
-      .catch((err: any) => {
-        console.log("error", err);
-      });
-  }
+export default {
+  taskById: async ({ id }: { id: string }, ctx: any): Promise<TasksType[]> =>
+    await Tasks.find({ user: id }).populate({
+      path: "user",
+      model: "User",
+    }),
+  addNewTask: async ({ input, id }: TasksParamsType, ctx: any): Promise<Task> =>
+    await Tasks.create({
+      title: input.title,
+      completed: input.completed,
+      user: id,
+    }),
+  updateTask: async (
+    { id, input }: { id: string; input: Task },
+    ctx: any
+  ): Promise<Task> => await Tasks.findOneAndUpdate({ _id: id }, input),
 }

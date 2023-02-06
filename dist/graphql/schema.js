@@ -14,10 +14,6 @@ const schema_1 = require("@graphql-tools/schema");
 const schema = (0, load_1.loadSchemaSync)((0, path_1.join)(__dirname, "schemas/schema.graphql"), {
     loaders: [new graphql_file_loader_1.GraphQLFileLoader()],
 });
-// const schema = makeExecutableSchema({
-//   typeDefs: [rootDefs],
-//   resolvers,
-// });
 const schemaWithResolvers = (0, schema_1.addResolversToSchema)({ schema, resolvers: resolvers_1.default });
 exports.default = schemaWithResolvers;
 //# sourceMappingURL=schema.js.map

@@ -8,6 +8,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("../config");
 class MongoHelper {
     initiateMongoConnection() {
+        ;
         mongoose_1.default.Promise = global.Promise;
         mongoose_1.default.set("strictQuery", true);
         mongoose_1.default

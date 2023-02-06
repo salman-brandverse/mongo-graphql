@@ -1,48 +1,31 @@
 // import { Context } from '../models/context';
 
-const Users = require("../models/users");
+const Users = require("../models/users")
 
-export class UsersController {
-  getUser(args: any, ctx: any) {
-    return (
-      Users.findOne({ _id: args["id"] })
-        //   .populate({
-        //     path: "user",
-        //     model: "User",
-        //   })
-        .then((user: any) => {
-          console.log("users", user);
-          return user;
-        })
-    );
-  }
-  getUsers(args: any, ctx: any) {
-    return (
-      Users.find()
-        //   .populate({
-        //     path: "user",
-        //     model: "User",
-        //   })
-        .then((user: any) => {
-          return user;
-        })
-        .catch((err: any) => {
-          console.log("mongoerr", err);
-        })
-    );
-  }
-
-  addUser(inputObject: any, ctx: any) {
-    return Users.create(inputObject.input).then((userInfo: any) => {
-      return userInfo;
-    });
-  }
-
-  updateUser(inputObject: any, ctx: any) {
-    return Users.findOneAndUpdate({ _id: inputObject.id }, inputObject.input, {
-      new: true,
-    }).then((userInfo: any) => {
-      return userInfo;
-    });
-  }
+export type UserupdateType = {
+  name: string
+  email: string
+  phone: string
 }
+export type UserParams = { id?: string; createdAt?: string } & UserupdateType
+
+const UsersController = () => {
+  const userById = async ({ id }: { id: string }): Promise<UserParams> =>
+    await Users.findOne({ _id: id })
+
+  const getUsers = async (args: any, ctx: any): Promise<UserParams[]> => {
+    return await Users.find()
+  }
+  const addNewUser = async (
+    inputObject: { input: UserParams },
+    ctx: any
+  ): Promise<UserParams> => await Users.create(inputObject.input)
+
+  const updateUser = async (
+    { id, input }: { id: string; input: UserupdateType },
+    ctx: any
+  ): Promise<UserParams> => await Users.findOneAndUpdate({ _id: id }, input)
+
+  return { userById, addNewUser, getUsers, updateUser }
+}
+export default UsersController

@@ -2,9 +2,11 @@ type User {
   email: String
   name: String
   phone: String
+  id: String
 }
 
 type Task {
+  id: String
   title: String
   completed: Boolean
   user: User

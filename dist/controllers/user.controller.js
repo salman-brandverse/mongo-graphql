@@ -1,45 +1,28 @@
 "use strict";
 // import { Context } from '../models/context';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersController = void 0;
 const Users = require("../models/users");
-class UsersController {
-    getUser(args, ctx) {
-        return (Users.findOne({ _id: args["id"] })
-            //   .populate({
-            //     path: "user",
-            //     model: "User",
-            //   })
-            .then((user) => {
-            console.log("users", user);
-            return user;
-        }));
-    }
-    getUsers(args, ctx) {
-        return (Users.find()
-            //   .populate({
-            //     path: "user",
-            //     model: "User",
-            //   })
-            .then((user) => {
-            return user;
-        })
-            .catch((err) => {
-            console.log("mongoerr", err);
-        }));
-    }
-    addUser(inputObject, ctx) {
-        return Users.create(inputObject.input).then((userInfo) => {
-            return userInfo;
-        });
-    }
-    updateUser(inputObject, ctx) {
-        return Users.findOneAndUpdate({ _id: inputObject.id }, inputObject.input, {
+const UsersController = () => {
+    const userById = ({ id }) => __awaiter(void 0, void 0, void 0, function* () { return yield Users.findOne({ _id: id }); });
+    const getUsers = (args, ctx) => __awaiter(void 0, void 0, void 0, function* () {
+        return yield Users.find();
+    });
+    const addNewUser = (inputObject, ctx) => __awaiter(void 0, void 0, void 0, function* () { return yield Users.create(inputObject.input); });
+    const updateUser = ({ id, input }, ctx) => __awaiter(void 0, void 0, void 0, function* () {
+        return yield Users.findOneAndUpdate({ _id: id }, input, {
             new: true,
-        }).then((userInfo) => {
-            return userInfo;
         });
-    }
-}
-exports.UsersController = UsersController;
+    });
+    return { userById, addNewUser, getUsers, updateUser };
+};
+exports.default = UsersController;
 //# sourceMappingURL=user.controller.js.map
